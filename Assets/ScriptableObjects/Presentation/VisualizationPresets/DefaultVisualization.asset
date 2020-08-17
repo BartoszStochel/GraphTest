@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e66e1cbd3b68c3e4d86a2241f6f21a5d, type: 3}
+  m_Name: DefaultVisualization
+  m_EditorClassIdentifier: 
+  tilesPerSecond: 2
+  tileColorsPreset: {fileID: 11400000, guid: 5d39822d09ec9e24e87e0c6e691d600e, type: 2}
