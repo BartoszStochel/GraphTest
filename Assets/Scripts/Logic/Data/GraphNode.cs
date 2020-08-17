@@ -2,5 +2,10 @@
 
 public class GraphNode
 {
-	private List<GraphNode> adjacentNodes;
+	public List<GraphNode> AdjacentNodes { get; private set; }
+
+	public void SetAdjacentNodes(List<GraphNode> adjacentNodes)
+	{
+		AdjacentNodes = adjacentNodes;
+	}
 }
