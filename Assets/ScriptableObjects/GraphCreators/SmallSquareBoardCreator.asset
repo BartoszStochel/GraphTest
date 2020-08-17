@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 469fb044c4315a94a81ab0a2b6c844c0, type: 3}
-  m_Name: RectangularBoardCreator
+  m_Name: SmallSquareBoardCreator
   m_EditorClassIdentifier: 
-  size: {x: 8, y: 5}
+  size: {x: 4, y: 4}

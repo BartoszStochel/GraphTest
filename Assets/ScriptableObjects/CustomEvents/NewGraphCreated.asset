@@ -9,7 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 469fb044c4315a94a81ab0a2b6c844c0, type: 3}
-  m_Name: RectangularBoardCreator
+  m_Script: {fileID: 11500000, guid: 352fdfe30e46dd14aae88d2e73e3517d, type: 3}
+  m_Name: NewGraphCreated
   m_EditorClassIdentifier: 
-  size: {x: 8, y: 5}

@@ -12,5 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91f96ae3a6419654bb6dd87bcd10ae57, type: 3}
   m_Name: GraphHandler
   m_EditorClassIdentifier: 
-  searchAlgorithm: {fileID: 11400000, guid: d0cc8c7e94167ce4ebc628fb47441fa7, type: 2}
   graphCreator: {fileID: 11400000, guid: aacd7e2c56470af42bad695c5d011ab9, type: 2}
+  searchAlgorithm: {fileID: 11400000, guid: d0cc8c7e94167ce4ebc628fb47441fa7, type: 2}
+  generateNewGraphEvent: {fileID: 11400000, guid: c56b82edae5918740b80be8e03808a49,
+    type: 2}
+  newGraphCreatedEvent: {fileID: 11400000, guid: d02b866df9b6b5e4886f650da68dbf54,
+    type: 2}

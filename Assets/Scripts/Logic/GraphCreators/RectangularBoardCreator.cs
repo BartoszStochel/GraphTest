@@ -4,13 +4,12 @@
 public class RectangularBoardCreator : BaseGraphCreator
 {
 #pragma warning disable 0649
-	[SerializeField] private int xSize;
-	[SerializeField] private int ySize;
+	[SerializeField] private Vector2 size;
 #pragma warning restore 0649
 
 	public override Graph GetNewGraph()
 	{
-		// Use xSize and ySize to create a new graph.
+		// Use size to create a new graph.
 		throw new System.NotImplementedException();
 	}
 }
