@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 
 public class RectangularGraph : Graph
 {
-	public Vector2Int Size { get; private set; }
+	public GraphNode[,] GraphAsBoard { get; private set; }
 
-	public RectangularGraph(List<GraphNode> nodes, Vector2Int size) : base(nodes)
+	public RectangularGraph(List<GraphNode> nodes, GraphNode[,] graphAsBoard) : base(nodes)
 	{
-		Size = size;
+		GraphAsBoard = graphAsBoard;
 	}
 }

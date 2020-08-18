@@ -63,6 +63,7 @@ MonoBehaviour:
     type: 2}
   tilemap: {fileID: 1484601153176248201}
   tile: {fileID: 11400000, guid: 3fa2282ecaab79c42b20b959f58365b1, type: 2}
+  graphHandler: {fileID: 11400000, guid: 62ae1e0d6668a7947b2d97f16ce9591c, type: 2}
 --- !u!1 &1484601153176248206
 GameObject:
   m_ObjectHideFlags: 0

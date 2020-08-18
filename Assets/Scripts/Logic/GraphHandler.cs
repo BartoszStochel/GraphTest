@@ -10,14 +10,22 @@ public class GraphHandler : ScriptableObject
 	[SerializeField] private CustomGraphEvent newGraphCreatedEvent;
 #pragma warning restore 0649
 
+	private Graph graph;
+
 	private void OnEnable()
 	{
 		generateNewGraphEvent.Event += CreateNewGraph;
 	}
 
+	public void FindPath(DesiredPathData desiredPathData)
+	{
+		searchAlgorithm.GetPathToNode(desiredPathData, graph);
+		// invoke event and pass search process data AND final path
+	}
+
 	private void CreateNewGraph()
 	{
-		Graph newGraph = graphCreator.GetNewGraph();
-		newGraphCreatedEvent.InvokeEvent(newGraph);
+		graph = graphCreator.GetNewGraph();
+		newGraphCreatedEvent.InvokeEvent(graph);
 	}
 }
