@@ -42,7 +42,7 @@ Grid:
   m_GameObject: {fileID: 1484601153090267334}
   m_Enabled: 1
   m_CellSize: {x: 1, y: 1, z: 0}
-  m_CellGap: {x: 0.5, y: 0.5, z: 0}
+  m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
 --- !u!114 &4953837028828861051
@@ -59,6 +59,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   visualizationPreset: {fileID: 11400000, guid: f2daf531fced35e47b2c9fe3801e7ad5,
     type: 2}
+  newGraphCreatedEvent: {fileID: 11400000, guid: d02b866df9b6b5e4886f650da68dbf54,
+    type: 2}
+  tilemap: {fileID: 1484601153176248201}
+  tile: {fileID: 11400000, guid: 3fa2282ecaab79c42b20b959f58365b1, type: 2}
 --- !u!1 &1484601153176248206
 GameObject:
   m_ObjectHideFlags: 0
@@ -70,7 +74,6 @@ GameObject:
   - component: {fileID: 1484601153176248207}
   - component: {fileID: 1484601153176248201}
   - component: {fileID: 1484601153176248200}
-  - component: {fileID: 3561519451979812609}
   m_Layer: 0
   m_Name: Tiles
   m_TagString: Untagged
@@ -112,29 +115,30 @@ Tilemap:
   - m_RefCount: 0
     m_Data:
       e00: NaN
-      e01: -1.09521666e+12
-      e02: -1.09521666e+12
+      e01: 0
+      e02: -3.0281321e-30
       e03: NaN
       e10: NaN
-      e11: 7.13e-43
-      e12: 7.13e-43
+      e11: 0
+      e12: 2.31e-43
       e13: NaN
-      e20: 1.6795642e+19
-      e21: -7.745608e-17
-      e22: 5.188159e-22
-      e23: -1.06952235e+12
-      e30: 4.5905e-41
-      e31: 7.13e-43
-      e32: 4.5907e-41
-      e33: 7.13e-43
+      e20: -5.310014e+34
+      e21: -3.0281291e-30
+      e22: 0
+      e23: 0
+      e30: 6.17e-43
+      e31: 2.31e-43
+      e32: 0
+      e33: 0
   m_TileColorArray:
   - m_RefCount: 0
-    m_Data: {r: 9.945573e-10, g: 9.945573e-10, b: 9.945573e-10, a: 9.945573e-10}
+    m_Data: {r: 0.0000000012096635, g: 0.0000000012096635, b: 0.0000000012096635,
+      a: 0.0000000012096635}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Origin: {x: -2, y: -2, z: 0}
-  m_Size: {x: 6, y: 5, z: 1}
+  m_Size: {x: 7, y: 7, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
   m_TileOrientation: 0
   m_TileOrientationMatrix:
@@ -201,19 +205,3 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
---- !u!19719996 &3561519451979812609
-TilemapCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1484601153176248206}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_MaximumTileChangeCount: 1000
-  m_ExtrusionFactor: 0.00001

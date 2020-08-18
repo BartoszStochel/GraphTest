@@ -30,7 +30,7 @@ public class RectangularBoardCreator : BaseGraphCreator
 			}
 		}
 
-		return new Graph(graphNodes);
+		return new RectangularGraph(graphNodes, size);
 	}
 
 	private List<GraphNode> GetAdjacentNodesOfNode(int x, int y, GraphNode[,] board)
