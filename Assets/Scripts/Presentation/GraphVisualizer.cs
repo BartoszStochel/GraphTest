@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 using UnityEngine.Tilemaps;
+using System.Collections;
 
 public class GraphVisualizer : MonoBehaviour
 {
+	private const float MINIMAL_VISUALIZATION_SPEED = 0.01f;
+
 #pragma warning disable 0649
 	[SerializeField] private VisualizationPreset visualizationPreset;
 	[SerializeField] private CustomGraphEvent newGraphCreatedEvent;
+	[SerializeField] private CustomPathfindingResultEvent pathfindingFinishedEvent;
 	[SerializeField] private Tilemap tilemap;
 	[SerializeField] private Tile tile;
 
@@ -21,10 +25,12 @@ public class GraphVisualizer : MonoBehaviour
 	private GraphNode[,] graphAsBoard;
 	private Vector2Int graphSize;
 	private ICommand findPathCommand;
+	private Coroutine visualizePathfindingCoroutine;
 
 	private void Awake()
 	{
 		newGraphCreatedEvent.Event += VisualizeGraph;
+		pathfindingFinishedEvent.Event += VisualizePathfinding;
 		tilemapTransform = tilemap.transform;
 		mainCamera = Camera.main;
 
@@ -53,13 +59,14 @@ public class GraphVisualizer : MonoBehaviour
 			Vector3 mouseWorldPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
 			Vector3Int mouseCellPosition = tilemap.WorldToCell(mouseWorldPosition);
 
-			if (graphAsBoard == null || !IsCellPositionWithinGraph(mouseCellPosition))
+			if (graphAsBoard == null || !IsCellPositionWithinGraph(mouseCellPosition) || visualizePathfindingCoroutine != null)
 			{
 				return;
 			}
 
 			if (FirstNode == null)
 			{
+				ResetTileColorsToDefault();
 				FirstNode = graphAsBoard[mouseCellPosition.x, mouseCellPosition.y];
 				tilemap.SetColor(mouseCellPosition, visualizationPreset.TileColorsPreset.StartTile);
 			}
@@ -115,6 +122,13 @@ public class GraphVisualizer : MonoBehaviour
 		tilemap.size = new Vector3Int(graphSize.x, graphSize.y, 0);
 		tilemap.FloodFill(Vector3Int.zero, tile);
 
+		ResetTileColorsToDefault();
+
+		tilemapTransform.position = -tilemap.localBounds.center;
+	}
+
+	private void ResetTileColorsToDefault()
+	{
 		for (int x = 0; x < graphSize.x; x++)
 		{
 			for (int y = 0; y < graphSize.y; y++)
@@ -122,7 +136,54 @@ public class GraphVisualizer : MonoBehaviour
 				tilemap.SetColor(new Vector3Int(x, y, 0), visualizationPreset.TileColorsPreset.DefaultTile);
 			}
 		}
+	}
 
-		tilemapTransform.position = -tilemap.localBounds.center;
+	private void VisualizePathfinding(PathfindingResult result)
+	{
+		if (visualizePathfindingCoroutine != null)
+		{
+			StopCoroutine(visualizePathfindingCoroutine);
+		}
+
+		visualizePathfindingCoroutine = StartCoroutine(VisualizePathfindingOverTime(result));
+	}
+
+	private IEnumerator VisualizePathfindingOverTime(PathfindingResult result)
+	{
+		for (int i = 1; i < result.VisitedNodes.Count; i++)
+		{
+			float visualizationSpeed = Mathf.Max(visualizationPreset.TilesPerSecond, MINIMAL_VISUALIZATION_SPEED);
+			yield return new WaitForSeconds(1f / visualizationSpeed);
+
+			if (i > 1)
+			{
+				tilemap.SetColor(GetCellPosition(result.VisitedNodes[i - 1]), visualizationPreset.TileColorsPreset.VisitedTile);
+			}
+
+			tilemap.SetColor(GetCellPosition(result.VisitedNodes[i]), visualizationPreset.TileColorsPreset.LastVisitedTile);
+		}
+
+		for (int i = 1; i < result.Path.Count; i++)
+		{
+			tilemap.SetColor(GetCellPosition(result.Path[i]), visualizationPreset.TileColorsPreset.FinalPathTile);
+		}
+
+		visualizePathfindingCoroutine = null;
+	}
+
+	private Vector3Int GetCellPosition(GraphNode graphNode)
+	{
+		for (int x = 0; x < graphSize.x; x++)
+		{
+			for (int y = 0; y < graphSize.y; y++)
+			{
+				if (graphAsBoard[x, y] == graphNode)
+				{
+					return new Vector3Int(x, y, 0);
+				}
+			}
+		}
+
+		return new Vector3Int(-1, -1, -1);
 	}
 }

@@ -61,6 +61,8 @@ MonoBehaviour:
     type: 2}
   newGraphCreatedEvent: {fileID: 11400000, guid: d02b866df9b6b5e4886f650da68dbf54,
     type: 2}
+  pathfindingFinishedEvent: {fileID: 11400000, guid: 6d04cbe63c863424fbb1a6485a83193b,
+    type: 2}
   tilemap: {fileID: 1484601153176248201}
   tile: {fileID: 11400000, guid: 3fa2282ecaab79c42b20b959f58365b1, type: 2}
   graphHandler: {fileID: 11400000, guid: 62ae1e0d6668a7947b2d97f16ce9591c, type: 2}

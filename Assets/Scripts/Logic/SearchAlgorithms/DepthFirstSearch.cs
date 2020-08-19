@@ -1,12 +1,42 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 [CreateAssetMenu(menuName = "Scriptable objects/Search algorithms/Depth-first search")]
 public class DepthFirstSearch : BaseSearchAlgorithm
 {
-	public override GraphNode GetPathToNode(DesiredPathData desiredPathData, Graph graph)
-	{
-		Debug.Log("depth");
+	private GraphNode finishNode;
+	private List<GraphNode> visitedNodes;
 
-		return null;
+	public override PathfindingResult GetPathToNode(DesiredPathData desiredPathData)
+	{
+		finishNode = desiredPathData.FinishNode;
+		visitedNodes = new List<GraphNode>();
+
+		return new PathfindingResult(visitedNodes, CheckNode(desiredPathData.StartNode));
+	}
+
+	private List<GraphNode> CheckNode(GraphNode nodeToInscpect)
+	{
+		visitedNodes.Add(nodeToInscpect);
+
+		foreach (GraphNode node in nodeToInscpect.AdjacentNodes)
+		{
+			if (node == finishNode)
+			{
+				return new List<GraphNode> { node };
+			}
+			else if (!visitedNodes.Contains(node))
+			{
+				List<GraphNode> pathToFinish = CheckNode(node);
+
+				if (pathToFinish.Count > 0)
+				{
+					pathToFinish.Add(node);
+					return pathToFinish;
+				}
+			}
+		}
+
+		return new List<GraphNode>();
 	}
 }

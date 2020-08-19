@@ -2,5 +2,5 @@
 
 public abstract class BaseSearchAlgorithm : ScriptableObject
 {
-	public abstract GraphNode GetPathToNode(DesiredPathData desiredPathData, Graph graph);
+	public abstract PathfindingResult GetPathToNode(DesiredPathData desiredPathData);
 }
