@@ -8,11 +8,12 @@ public class GraphVisualizer : MonoBehaviour
 
 #pragma warning disable 0649
 	[SerializeField] private VisualizationPreset visualizationPreset;
+	[SerializeField] private CustomEvent finalizeVisualizationEvent;
+	[SerializeField] private CustomEvent stopAndClearVisualizationEvent;
 	[SerializeField] private CustomGraphEvent newGraphCreatedEvent;
 	[SerializeField] private CustomPathfindingResultEvent pathfindingFinishedEvent;
 	[SerializeField] private Tilemap tilemap;
 	[SerializeField] private Tile tile;
-
 	[SerializeField] private GraphHandler graphHandler;
 #pragma warning restore 0649
 
@@ -26,9 +27,13 @@ public class GraphVisualizer : MonoBehaviour
 	private Vector2Int graphSize;
 	private ICommand findPathCommand;
 	private Coroutine visualizePathfindingCoroutine;
+	private bool isCurrentlyVisualizingPathfinding;
+	private bool visualizeImmediately;
 
 	private void Awake()
 	{
+		finalizeVisualizationEvent.Event += FinalizeVisualization;
+		stopAndClearVisualizationEvent.Event += StopAndClearVisualization;
 		newGraphCreatedEvent.Event += VisualizeGraph;
 		pathfindingFinishedEvent.Event += VisualizePathfinding;
 		tilemapTransform = tilemap.transform;
@@ -52,6 +57,24 @@ public class GraphVisualizer : MonoBehaviour
 		return new DesiredPathData(FirstNode, SecondNode);
 	}
 
+	private void FinalizeVisualization()
+	{
+		visualizeImmediately = true;
+	}
+
+	private void StopAndClearVisualization()
+	{
+		if (visualizePathfindingCoroutine != null)
+		{
+			StopCoroutine(visualizePathfindingCoroutine);
+			isCurrentlyVisualizingPathfinding = false;
+		}
+
+		ResetTileColorsToDefault();
+		FirstNode = null;
+		SecondNode = null;
+	}
+
 	private void HandleMouseClicking()
 	{
 		if (Input.GetMouseButtonDown(0))
@@ -59,7 +82,7 @@ public class GraphVisualizer : MonoBehaviour
 			Vector3 mouseWorldPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
 			Vector3Int mouseCellPosition = tilemap.WorldToCell(mouseWorldPosition);
 
-			if (graphAsBoard == null || !IsCellPositionWithinGraph(mouseCellPosition) || visualizePathfindingCoroutine != null)
+			if (graphAsBoard == null || !IsCellPositionWithinGraph(mouseCellPosition) || isCurrentlyVisualizingPathfinding)
 			{
 				return;
 			}
@@ -101,6 +124,11 @@ public class GraphVisualizer : MonoBehaviour
 
 	private void VisualizeGraph(Graph graph)
 	{
+		if (isCurrentlyVisualizingPathfinding)
+		{
+			return;
+		}
+
 		if (graph is RectangularGraph rectangularGraph)
 		{
 			FirstNode = null;
@@ -145,16 +173,22 @@ public class GraphVisualizer : MonoBehaviour
 			StopCoroutine(visualizePathfindingCoroutine);
 		}
 
+		visualizeImmediately = false;
 		visualizePathfindingCoroutine = StartCoroutine(VisualizePathfindingOverTime(result));
 	}
 
 	private IEnumerator VisualizePathfindingOverTime(PathfindingResult result)
 	{
+		isCurrentlyVisualizingPathfinding = true;
+
 		float gradientEvaluationValue = 0f;
 		for (int i = 1; i < result.VisitedNodes.Count; i++)
 		{
-			float visualizationSpeed = Mathf.Max(visualizationPreset.TilesPerSecond, MINIMAL_VISUALIZATION_SPEED);
-			yield return new WaitForSeconds(1f / visualizationSpeed);
+			if (!visualizeImmediately)
+			{
+				float visualizationSpeed = Mathf.Max(visualizationPreset.TilesPerSecond, MINIMAL_VISUALIZATION_SPEED);
+				yield return new WaitForSeconds(1f / visualizationSpeed);
+			}
 
 			if (i > 1)
 			{
@@ -169,7 +203,7 @@ public class GraphVisualizer : MonoBehaviour
 		}
 
 		gradientEvaluationValue = 0f;
-		for (int i = 1; i < result.Path.Count; i++)
+		for (int i = 0; i < result.Path.Count - 1; i++)
 		{
 			tilemap.SetColor(
 				GetCellPosition(result.Path[i]),
@@ -178,7 +212,7 @@ public class GraphVisualizer : MonoBehaviour
 			gradientEvaluationValue += 1f / (result.Path.Count - 2f);
 		}
 
-		visualizePathfindingCoroutine = null;
+		isCurrentlyVisualizingPathfinding = false;
 	}
 
 	private Vector3Int GetCellPosition(GraphNode graphNode)

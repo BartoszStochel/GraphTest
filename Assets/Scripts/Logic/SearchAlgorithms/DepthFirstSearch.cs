@@ -31,7 +31,7 @@ public class DepthFirstSearch : BaseSearchAlgorithm
 
 				if (pathToFinish.Count > 0)
 				{
-					pathToFinish.Add(node);
+					pathToFinish.Insert(0, node);
 					return pathToFinish;
 				}
 			}

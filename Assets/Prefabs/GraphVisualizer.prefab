@@ -59,6 +59,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   visualizationPreset: {fileID: 11400000, guid: f2daf531fced35e47b2c9fe3801e7ad5,
     type: 2}
+  finalizeVisualizationEvent: {fileID: 11400000, guid: cf05101fbb91569439dd138c92c16fbc,
+    type: 2}
+  stopAndClearVisualizationEvent: {fileID: 11400000, guid: afc296eacd0067948ba4714283fe89ed,
+    type: 2}
   newGraphCreatedEvent: {fileID: 11400000, guid: d02b866df9b6b5e4886f650da68dbf54,
     type: 2}
   pathfindingFinishedEvent: {fileID: 11400000, guid: 6d04cbe63c863424fbb1a6485a83193b,
