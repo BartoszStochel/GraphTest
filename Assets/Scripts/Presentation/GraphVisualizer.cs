@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GraphVisualizer : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class GraphVisualizer : MonoBehaviour
 	[SerializeField] private CustomPathfindingResultEvent pathfindingFinishedEvent;
 	[SerializeField] private Tilemap tilemap;
 	[SerializeField] private Tile tile;
+
 	[SerializeField] private GraphHandler graphHandler;
 #pragma warning restore 0649
 
@@ -26,7 +28,6 @@ public class GraphVisualizer : MonoBehaviour
 	private GraphNode[,] graphAsBoard;
 	private Vector2Int graphSize;
 	private ICommand findPathCommand;
-	private Coroutine visualizePathfindingCoroutine;
 	private bool isCurrentlyVisualizingPathfinding;
 	private bool visualizeImmediately;
 
@@ -36,6 +37,7 @@ public class GraphVisualizer : MonoBehaviour
 		stopAndClearVisualizationEvent.Event += StopAndClearVisualization;
 		newGraphCreatedEvent.Event += VisualizeGraph;
 		pathfindingFinishedEvent.Event += VisualizePathfinding;
+
 		tilemapTransform = tilemap.transform;
 		mainCamera = Camera.main;
 
@@ -64,15 +66,10 @@ public class GraphVisualizer : MonoBehaviour
 
 	private void StopAndClearVisualization()
 	{
-		if (visualizePathfindingCoroutine != null)
-		{
-			StopCoroutine(visualizePathfindingCoroutine);
-			isCurrentlyVisualizingPathfinding = false;
-		}
-
+		StopAllCoroutines();
+		isCurrentlyVisualizingPathfinding = false;
 		ResetTileColorsToDefault();
-		FirstNode = null;
-		SecondNode = null;
+		ResetSelectedNodes();
 	}
 
 	private void HandleMouseClicking()
@@ -89,28 +86,37 @@ public class GraphVisualizer : MonoBehaviour
 
 			if (FirstNode == null)
 			{
-				ResetTileColorsToDefault();
-				FirstNode = graphAsBoard[mouseCellPosition.x, mouseCellPosition.y];
-				tilemap.SetColor(mouseCellPosition, visualizationPreset.TileColorsPreset.StartTile);
+				SelectFirstNode(mouseCellPosition);
 			}
 			else
 			{
-				SecondNode = graphAsBoard[mouseCellPosition.x, mouseCellPosition.y];
-
-				if (FirstNode == SecondNode)
-				{
-					tilemap.SetColor(mouseCellPosition, visualizationPreset.TileColorsPreset.DefaultTile);
-				}
-				else
-				{
-					tilemap.SetColor(mouseCellPosition, visualizationPreset.TileColorsPreset.FinishTile);
-					findPathCommand.Execute();
-				}
-
-				FirstNode = null;
-				SecondNode = null;
+				SelectSecondNode(mouseCellPosition);
 			}
 		}
+	}
+
+	private void SelectFirstNode(Vector3Int mouseCellPosition)
+	{
+		FirstNode = graphAsBoard[mouseCellPosition.x, mouseCellPosition.y];
+		ResetTileColorsToDefault();
+		tilemap.SetColor(mouseCellPosition, visualizationPreset.TileColorsPreset.StartTile);
+	}
+
+	private void SelectSecondNode(Vector3Int mouseCellPosition)
+	{
+		SecondNode = graphAsBoard[mouseCellPosition.x, mouseCellPosition.y];
+
+		if (FirstNode == SecondNode)
+		{
+			tilemap.SetColor(mouseCellPosition, visualizationPreset.TileColorsPreset.DefaultTile);
+		}
+		else
+		{
+			tilemap.SetColor(mouseCellPosition, visualizationPreset.TileColorsPreset.FinishTile);
+			findPathCommand.Execute();
+		}
+
+		ResetSelectedNodes();
 	}
 	
 	private bool IsCellPositionWithinGraph(Vector3Int cellPosition)
@@ -122,6 +128,12 @@ public class GraphVisualizer : MonoBehaviour
 			cellPosition.y < graphSize.y;
 	}
 
+	private void ResetSelectedNodes()
+	{
+		FirstNode = null;
+		SecondNode = null;
+	}
+
 	private void VisualizeGraph(Graph graph)
 	{
 		if (isCurrentlyVisualizingPathfinding)
@@ -129,10 +141,10 @@ public class GraphVisualizer : MonoBehaviour
 			return;
 		}
 
+		ResetSelectedNodes();
+
 		if (graph is RectangularGraph rectangularGraph)
 		{
-			FirstNode = null;
-			SecondNode = null;
 			graphAsBoard = rectangularGraph.GraphAsBoard;
 			graphSize = new Vector2Int(graphAsBoard.GetLength(0), graphAsBoard.GetLength(1));
 
@@ -168,21 +180,27 @@ public class GraphVisualizer : MonoBehaviour
 
 	private void VisualizePathfinding(PathfindingResult result)
 	{
-		if (visualizePathfindingCoroutine != null)
-		{
-			StopCoroutine(visualizePathfindingCoroutine);
-		}
+		StopAllCoroutines();
 
 		visualizeImmediately = false;
-		visualizePathfindingCoroutine = StartCoroutine(VisualizePathfindingOverTime(result));
+		StartCoroutine(VisualizePathfindingOverTime(result));
 	}
 
 	private IEnumerator VisualizePathfindingOverTime(PathfindingResult result)
 	{
 		isCurrentlyVisualizingPathfinding = true;
 
+		yield return StartCoroutine(VisualizeSearching(result.VisitedNodes));
+		VisualizePath(result.Path);
+
+		isCurrentlyVisualizingPathfinding = false;
+	}
+
+	private IEnumerator VisualizeSearching(List<GraphNode> visitedNodes)
+	{
 		float gradientEvaluationValue = 0f;
-		for (int i = 1; i < result.VisitedNodes.Count; i++)
+
+		for (int i = 1; i < visitedNodes.Count; i++)
 		{
 			if (!visualizeImmediately)
 			{
@@ -193,26 +211,28 @@ public class GraphVisualizer : MonoBehaviour
 			if (i > 1)
 			{
 				tilemap.SetColor(
-					GetCellPosition(result.VisitedNodes[i - 1]),
+					GetCellPosition(visitedNodes[i - 1]),
 					visualizationPreset.TileColorsPreset.VisitedTile.Evaluate(gradientEvaluationValue));
 
-				gradientEvaluationValue += 1f / (result.VisitedNodes.Count - 3f);
+				gradientEvaluationValue += 1f / (visitedNodes.Count - 3f);
 			}
 
-			tilemap.SetColor(GetCellPosition(result.VisitedNodes[i]), visualizationPreset.TileColorsPreset.LastVisitedTile);
+			tilemap.SetColor(GetCellPosition(visitedNodes[i]), visualizationPreset.TileColorsPreset.LastVisitedTile);
 		}
+	}
 
-		gradientEvaluationValue = 0f;
-		for (int i = 0; i < result.Path.Count - 1; i++)
+	private void VisualizePath(List<GraphNode> path)
+	{
+		float gradientEvaluationValue = 0f;
+
+		for (int i = 0; i < path.Count - 1; i++)
 		{
 			tilemap.SetColor(
-				GetCellPosition(result.Path[i]),
+				GetCellPosition(path[i]),
 				visualizationPreset.TileColorsPreset.FinalPathTile.Evaluate(gradientEvaluationValue));
 
-			gradientEvaluationValue += 1f / (result.Path.Count - 2f);
+			gradientEvaluationValue += 1f / (path.Count - 2f);
 		}
-
-		isCurrentlyVisualizingPathfinding = false;
 	}
 
 	private Vector3Int GetCellPosition(GraphNode graphNode)
