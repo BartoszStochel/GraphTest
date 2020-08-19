@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e66e1cbd3b68c3e4d86a2241f6f21a5d, type: 3}
   m_Name: DefaultVisualization
   m_EditorClassIdentifier: 
-  tilesPerSecond: 10
+  tilesPerSecond: 15
   tileColorsPreset: {fileID: 11400000, guid: 5d39822d09ec9e24e87e0c6e691d600e, type: 2}

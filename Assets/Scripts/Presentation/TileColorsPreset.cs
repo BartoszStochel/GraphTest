@@ -5,17 +5,17 @@ public class TileColorsPreset : ScriptableObject
 {
 #pragma warning disable 0649
 	[SerializeField] private Color defaultTile;
-	[SerializeField] private Color visitedTile;
+	[SerializeField] private Gradient visitedTile;
 	[SerializeField] private Color lastVisitedTile;
 	[SerializeField] private Color startTile;
 	[SerializeField] private Color finishTile;
-	[SerializeField] private Color finalPathTile;
+	[SerializeField] private Gradient finalPathTile;
 #pragma warning restore 0649
 
 	public Color DefaultTile => defaultTile;
-	public Color VisitedTile => visitedTile;
+	public Gradient VisitedTile => visitedTile;
 	public Color LastVisitedTile => lastVisitedTile;
 	public Color StartTile => startTile;
 	public Color FinishTile => finishTile;
-	public Color FinalPathTile => finalPathTile;
+	public Gradient FinalPathTile => finalPathTile;
 }

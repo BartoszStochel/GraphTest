@@ -4,7 +4,7 @@ using System.Collections;
 
 public class GraphVisualizer : MonoBehaviour
 {
-	private const float MINIMAL_VISUALIZATION_SPEED = 0.01f;
+	private const float MINIMAL_VISUALIZATION_SPEED = 0.1f;
 
 #pragma warning disable 0649
 	[SerializeField] private VisualizationPreset visualizationPreset;
@@ -150,6 +150,7 @@ public class GraphVisualizer : MonoBehaviour
 
 	private IEnumerator VisualizePathfindingOverTime(PathfindingResult result)
 	{
+		float gradientEvaluationValue = 0f;
 		for (int i = 1; i < result.VisitedNodes.Count; i++)
 		{
 			float visualizationSpeed = Mathf.Max(visualizationPreset.TilesPerSecond, MINIMAL_VISUALIZATION_SPEED);
@@ -157,15 +158,24 @@ public class GraphVisualizer : MonoBehaviour
 
 			if (i > 1)
 			{
-				tilemap.SetColor(GetCellPosition(result.VisitedNodes[i - 1]), visualizationPreset.TileColorsPreset.VisitedTile);
+				tilemap.SetColor(
+					GetCellPosition(result.VisitedNodes[i - 1]),
+					visualizationPreset.TileColorsPreset.VisitedTile.Evaluate(gradientEvaluationValue));
+
+				gradientEvaluationValue += 1f / (result.VisitedNodes.Count - 3f);
 			}
 
 			tilemap.SetColor(GetCellPosition(result.VisitedNodes[i]), visualizationPreset.TileColorsPreset.LastVisitedTile);
 		}
 
+		gradientEvaluationValue = 0f;
 		for (int i = 1; i < result.Path.Count; i++)
 		{
-			tilemap.SetColor(GetCellPosition(result.Path[i]), visualizationPreset.TileColorsPreset.FinalPathTile);
+			tilemap.SetColor(
+				GetCellPosition(result.Path[i]),
+				visualizationPreset.TileColorsPreset.FinalPathTile.Evaluate(gradientEvaluationValue));
+
+			gradientEvaluationValue += 1f / (result.Path.Count - 2f);
 		}
 
 		visualizePathfindingCoroutine = null;
