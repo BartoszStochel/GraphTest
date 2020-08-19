@@ -4,14 +4,9 @@ using System.Collections.Generic;
 [CreateAssetMenu(menuName = "Scriptable objects/Search algorithms/Depth-first search")]
 public class DepthFirstSearch : BaseSearchAlgorithm
 {
-	private GraphNode finishNode;
-	private List<GraphNode> visitedNodes;
-
 	public override PathfindingResult GetPathToNode(DesiredPathData desiredPathData)
 	{
-		finishNode = desiredPathData.FinishNode;
-		visitedNodes = new List<GraphNode>();
-
+		InitializePathfinding(desiredPathData);
 		return new PathfindingResult(visitedNodes, CheckNode(desiredPathData.StartNode));
 	}
 

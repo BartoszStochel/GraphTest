@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e66e1cbd3b68c3e4d86a2241f6f21a5d, type: 3}
   m_Name: FastVisualization
   m_EditorClassIdentifier: 
-  tilesPerSecond: 10
+  tilesPerSecond: 60
   tileColorsPreset: {fileID: 11400000, guid: 545ebc1bb31e14142a7b5b85ccef8099, type: 2}

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4ae0918cd32aa548b3629e4948b3a9a, type: 3}
   m_Name: GrayscaleTileColors
   m_EditorClassIdentifier: 
-  defaultTile: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  defaultTile: {r: 0.4, g: 0.4, b: 0.4, a: 1}
   visitedTile:
     serializedVersion: 2
     key0: {r: 0, g: 0, b: 0, a: 1}
@@ -42,13 +42,13 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
-  lastVisitedTile: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+  lastVisitedTile: {r: 1, g: 1, b: 1, a: 1}
   startTile: {r: 1, g: 1, b: 1, a: 1}
   finishTile: {r: 1, g: 1, b: 1, a: 1}
   finalPathTile:
     serializedVersion: 2
-    key0: {r: 0.698, g: 0.698, b: 0.698, a: 1}
-    key1: {r: 1, g: 1, b: 1, a: 1}
+    key0: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    key1: {r: 0.9, g: 0.9, b: 0.9, a: 1}
     key2: {r: 0.4392157, g: 0.83137256, b: 0.73333335, a: 0.78039217}
     key3: {r: 0.4392157, g: 0.83137256, b: 0.73333335, a: 0.78039217}
     key4: {r: 0.4392157, g: 0.83137256, b: 0.73333335, a: 0.78039217}
