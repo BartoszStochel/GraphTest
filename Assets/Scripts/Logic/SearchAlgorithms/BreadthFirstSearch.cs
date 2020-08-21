@@ -8,6 +8,7 @@ public class BreadthFirstSearch : BaseSearchAlgorithm
 	{
 		InitializePathfinding(desiredPathData);
 
+		// Consider using different data structure, LinkedList<> maybe?
 		List<GraphNode> pathToFinish = new List<GraphNode>();
 		LinkedGraphNode linkedFinishNode = GetFinishNode(desiredPathData.StartNode);
 

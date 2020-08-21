@@ -12,7 +12,6 @@ public class GraphVisualizer : MonoBehaviour
 	[SerializeField] private CustomEvent finalizeVisualizationEvent;
 	[SerializeField] private CustomEvent stopAndClearVisualizationEvent;
 	[SerializeField] private CustomGraphEvent newGraphCreatedEvent;
-	[SerializeField] private CustomPathfindingResultEvent pathfindingFinishedEvent;
 	[SerializeField] private Tilemap tilemap;
 	[SerializeField] private Tile tile;
 
@@ -31,17 +30,19 @@ public class GraphVisualizer : MonoBehaviour
 	private bool isCurrentlyVisualizingPathfinding;
 	private bool visualizeImmediately;
 
+	private Coroutine visualizePathfindingCoroutine;
+	private Coroutine visualizeSearchingCoroutine;
+
 	private void Awake()
 	{
 		finalizeVisualizationEvent.Event += FinalizeVisualization;
 		stopAndClearVisualizationEvent.Event += StopAndClearVisualization;
 		newGraphCreatedEvent.Event += VisualizeGraph;
-		pathfindingFinishedEvent.Event += VisualizePathfinding;
 
 		tilemapTransform = tilemap.transform;
 		mainCamera = Camera.main;
 
-		SetFindPathCommand(new FindPathCommand(GetDesiredPathData, graphHandler));
+		SetFindPathCommand(new FindPathCommand(GetDesiredPathData, VisualizePathfinding, graphHandler));
 	}
 
 	private void Update()
@@ -66,7 +67,7 @@ public class GraphVisualizer : MonoBehaviour
 
 	private void StopAndClearVisualization()
 	{
-		StopAllCoroutines();
+		StopVisualizingCoroutines();
 		isCurrentlyVisualizingPathfinding = false;
 		ResetTileColorsToDefault();
 		ResetSelectedNodes();
@@ -180,17 +181,17 @@ public class GraphVisualizer : MonoBehaviour
 
 	private void VisualizePathfinding(PathfindingResult result)
 	{
-		StopAllCoroutines();
+		StopVisualizingCoroutines();
 
 		visualizeImmediately = false;
-		StartCoroutine(VisualizePathfindingOverTime(result));
+		visualizePathfindingCoroutine = StartCoroutine(VisualizePathfindingOverTime(result));
 	}
 
 	private IEnumerator VisualizePathfindingOverTime(PathfindingResult result)
 	{
 		isCurrentlyVisualizingPathfinding = true;
 
-		yield return StartCoroutine(VisualizeSearching(result.VisitedNodes));
+		yield return visualizeSearchingCoroutine = StartCoroutine(VisualizeSearching(result.VisitedNodes));
 		VisualizePath(result.Path);
 
 		isCurrentlyVisualizingPathfinding = false;
@@ -249,5 +250,18 @@ public class GraphVisualizer : MonoBehaviour
 		}
 
 		return new Vector3Int(-1, -1, -1);
+	}
+
+	private void StopVisualizingCoroutines()
+	{
+		if (visualizePathfindingCoroutine != null)
+		{
+			StopCoroutine(visualizePathfindingCoroutine);
+		}
+
+		if (visualizeSearchingCoroutine != null)
+		{
+			StopCoroutine(visualizeSearchingCoroutine);
+		}
 	}
 }

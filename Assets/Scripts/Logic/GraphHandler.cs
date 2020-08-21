@@ -8,7 +8,6 @@ public class GraphHandler : ScriptableObject
 	[SerializeField] private BaseSearchAlgorithm searchAlgorithm;
 	[SerializeField] private CustomEvent generateNewGraphEvent;
 	[SerializeField] private CustomGraphEvent newGraphCreatedEvent;
-	[SerializeField] private CustomPathfindingResultEvent pathfindingFinishedEvent;
 #pragma warning restore 0649
 
 	private void OnEnable()
@@ -16,10 +15,9 @@ public class GraphHandler : ScriptableObject
 		generateNewGraphEvent.Event += CreateNewGraph;
 	}
 
-	public void FindPath(DesiredPathData desiredPathData)
+	public PathfindingResult FindPath(DesiredPathData desiredPathData)
 	{
-		PathfindingResult result = searchAlgorithm.GetPathToNode(desiredPathData);
-		pathfindingFinishedEvent.InvokeEvent(result);
+		return searchAlgorithm.GetPathToNode(desiredPathData);
 	}
 
 	private void CreateNewGraph()
